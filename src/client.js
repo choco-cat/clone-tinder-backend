@@ -1,10 +1,9 @@
+import { addUser, login } from './services/users';
+
+// TODO вынести в хелпер
 const md5 = require('md5');
 
-const usersForm = document.forms[0];
-const userData = JSON.stringify(usersForm);
-console.log(userData);
-
-const prepereData = (form) => {
+const prepareData = (form) => {
   const data = {};
   [...form.elements].forEach((el) => {
     if (el.getAttribute('name')) {
@@ -12,21 +11,32 @@ const prepereData = (form) => {
       data[nameField] = nameField === 'password' ? md5(el.value) : el.value;
     }
   });
-  console.log(data);
   return data;
 };
 
-usersForm.onsubmit = (event) => {
+// TODO вынести в хелпер
+// Если не null, то возвращает все данные по пользователю, обратно - пользователь не авторизован
+const getAuthorizedUser = () => sessionStorage.getItem('clone-tinder-user');
+
+const registerForm = document.querySelector('#register-form');
+
+registerForm.onsubmit = (event) => {
 // stop our form submission from refreshing the page
   event.preventDefault();
-  const data = prepereData(usersForm);
-  fetch('http://localhost:8090/addUser', {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: { 'Content-Type': 'application/json' },
-  })
-    .then((res) => res.json())
-    .then((response) => {
-      console.log(JSON.stringify(response));
-    });
+  const data = prepareData(registerForm);
+  addUser(data);
+};
+
+const loginForm = document.querySelector('#login-form');
+
+loginForm.onsubmit = async (event) => {
+// stop our form submission from refreshing the page
+  event.preventDefault();
+  const data = prepareData(loginForm);
+  const loginUser = await login(data);
+  if (loginUser.id) {
+    console.log('login');
+  } else {
+    console.log('login wrong');
+  }
 };

@@ -2,8 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
+const md5 = require('md5');
 // TODO при заливке на сервер изменить на адрес сервера, вынести эти константы в отдельный файл
-const url = '';
+const URL = '';
 const dbFile = './data/sqlite3.db';
 
 const app = express();
@@ -20,17 +21,23 @@ app.get('/', (request, response) => {
 });
 
 // endpoint to get all users in the database
-app.get(`${url}/getUsers`, (request, response) => {
-  db.all('SELECT * from users', (err, rows) => response.send(JSON.stringify(rows)));
+app.get(`${URL}/getUsers`, (request, response) => {
+  db.all('SELECT * from users', (error, rows) => response.send(JSON.stringify(rows)));
+});
+
+// endpoint to check user login
+app.post(`${URL}/loginUser`, (request, response) => {
+  db.all('SELECT * FROM users WHERE email = ? AND password = ?', request.body.email, request.body.password,
+    (error, rows) => response.send(JSON.stringify(rows)));
 });
 
 // endpoint to get all users in the database
-app.get(`${url}/getUser/:id`, (request, response) => {
+app.get(`${URL}/getUser/:id`, (request, response) => {
   db.all('SELECT * from users WHERE id = (?)', request.params.id, (err, rows) => response.send(JSON.stringify(rows)));
 });
 
 // endpoint to add a user to the database
-app.post(`${url}/addUser`, (request, response) => {
+app.post(`${URL}/addUser`, (request, response) => {
   const values = [];
   const fields = Object.keys(request.body);
   fields.forEach((field) => values.push(request.body[field]));
