@@ -20,3 +20,7 @@ export const login = async (data) => {
   sessionStorage.setItem('clone-tinder-user', userAuth.id ? JSON.stringify(userAuth) : null);
   return user;
 };
+
+export const logout = () => {
+  sessionStorage.setItem('clone-tinder-user', null);
+};

@@ -1,4 +1,4 @@
-import { addUser, login } from './services/users';
+import { addUser, login, logout } from './services/users';
 
 // TODO вынести в хелпер
 const md5 = require('md5');
@@ -16,7 +16,7 @@ const prepareData = (form) => {
 
 // TODO вынести в хелпер
 // Если не null, то возвращает все данные по пользователю, обратно - пользователь не авторизован
-const getAuthorizedUser = () => sessionStorage.getItem('clone-tinder-user');
+const getAuthorizedUser = () => JSON.parse(sessionStorage.getItem('clone-tinder-user'));
 
 const registerForm = document.querySelector('#register-form');
 
@@ -27,6 +27,20 @@ registerForm.onsubmit = (event) => {
   addUser(data);
 };
 
+const displayAuthorizedUser = () => {
+  const currentUser = getAuthorizedUser();
+  const currentUserBlock = document.getElementById('current-user');
+  const logoutButton = document.getElementById('logout');
+
+  if (currentUser && currentUser.email) {
+    currentUserBlock.innerHTML = `${currentUser.name} ${currentUser.email}`;
+    logoutButton.style.display = 'block';
+  } else {
+    currentUserBlock.innerHTML = 'Пользователь не авторизован';
+    logoutButton.style.display = 'none';
+  }
+};
+
 const loginForm = document.querySelector('#login-form');
 
 loginForm.onsubmit = async (event) => {
@@ -35,8 +49,16 @@ loginForm.onsubmit = async (event) => {
   const data = prepareData(loginForm);
   const loginUser = await login(data);
   if (loginUser.id) {
-    console.log('login');
+    console.log('login', loginUser);
   } else {
     console.log('login wrong');
   }
+  displayAuthorizedUser();
 };
+
+document.getElementById('logout').onclick = () => {
+  logout();
+  displayAuthorizedUser();
+};
+
+displayAuthorizedUser();
