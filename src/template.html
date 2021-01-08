@@ -10,7 +10,25 @@
 
 <body>
   <div class="app">
-
+    <form>
+      <input name="email" type="text" maxlength="20" placeholder="email">
+      <br/><br/>
+      <input name="password" type="text" maxlength="30" placeholder="password">
+      <br/><br/>
+      <input name="name" type="text" maxlength="40" placeholder="Name">
+      <br/><br/>
+      <input name="birth" type="text" maxlength="8" placeholder="Birth">
+      <br/><br/>
+      <select name="gender_id">
+        <option value="1">Male</option>
+        <option value="2">Female</option>
+        <option value="3">Transgender</option>
+      </select>
+      <br/><br/>
+      <input name="photo" type="text" maxlength="40" placeholder="Photo file url">
+      <br/><br/>
+      <button type="submit" id="submit-user">Register</button>
+    </form>
   </div>
 </body>
 
