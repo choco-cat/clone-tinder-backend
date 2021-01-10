@@ -1,2 +1,0 @@
-# rsclone
-Tinder clone application
