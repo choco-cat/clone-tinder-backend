@@ -52,4 +52,6 @@ app.post(`${URL}/addUser`, (request, response) => {
   }
 });
 // listen for requests :)
-app.listen(8090, () => console.log('Your app is listening on port 8090'));
+var listener = app.listen(process.env.PORT, () => {
+  console.log(`Your app is listening on port ${listener.address().port}`);
+});
