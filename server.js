@@ -21,23 +21,23 @@ app.get('/', (request, response) => {
 });
 
 // endpoint to get all users in the database
-app.get(`${URL}/getUsers`, (request, response) => {
+app.get(`${URL}/users`, (request, response) => {
   db.all('SELECT * from users', (error, rows) => response.send(JSON.stringify(rows)));
 });
 
 // endpoint to check user login
-app.post(`${URL}/loginUser`, (request, response) => {
+app.post(`${URL}//users/login`, (request, response) => {
   db.all('SELECT * FROM users WHERE email = ? AND password = ?', request.body.email, request.body.password,
     (error, rows) => response.send(JSON.stringify(rows)));
 });
 
 // endpoint to get all users in the database
-app.get(`${URL}/getUser/:id`, (request, response) => {
+app.get(`${URL}/users/:id`, (request, response) => {
   db.all('SELECT * from users WHERE id = (?)', request.params.id, (err, rows) => response.send(JSON.stringify(rows)));
 });
 
 // endpoint to add a user to the database
-app.post(`${URL}/addUser`, (request, response) => {
+app.post(`${URL}/users/add`, (request, response) => {
   const values = [];
   const fields = Object.keys(request.body);
   fields.forEach((field) => values.push(request.body[field]));
@@ -55,3 +55,4 @@ app.post(`${URL}/addUser`, (request, response) => {
 var listener = app.listen(process.env.PORT, () => {
   console.log(`Your app is listening on port ${listener.address().port}`);
 });
+
