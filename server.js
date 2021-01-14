@@ -23,7 +23,7 @@ app.get('/', (request, response) => {
   response.sendFile(`${__dirname}/views/index.html`);
 });
 
-app.get('/logsApp', (request, response) => {
+app.get('/logs', (request, response) => {
     response.sendFile(`${__dirname}/logsApp/info.log`);
 });
 
