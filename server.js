@@ -24,6 +24,10 @@ app.get('/', (request, response) => {
   response.sendFile(`${__dirname}/views/index.html`);
 });
 
+app.get('/logs', (request, response) => {
+    response.sendFile(`${__dirname}/logs/info.log`);
+});
+
 // endpoint to get all users in the database
 app.get(`${URL}/users`, (request, response) => {
   db.all('SELECT * from users', (err, rows) => {
