@@ -13,7 +13,6 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-//app.use(morgan('combined', { stream: winston.info.stream }));
 app.use(morgan('combined', { stream: winston.stream }));
 app.use(cors());
 
@@ -37,7 +36,6 @@ app.get(`${URL}/users`, (request, response) => {
           response.status(err.status || 500).send('Server Error!');
       } else {
           winston.level = 'info';
-        //  winston.info('info');
           response.send(JSON.stringify(rows));
       }
   });
@@ -119,6 +117,24 @@ app.delete(`${URL}/users/:id`, (request, response) => {
   }
 });
 
+// endpoint to get some user from the database
+app.get(`${URL}/usersimport`, (request, response) => {
+  var fs = require("fs");
+  var contents = fs.readFileSync("users.json");
+  var data = JSON.parse(contents);
+  data.results.forEach(el => {
+    const userName = `${el.name.first} ${el.name.last}`;
+    const genderId = el.gender === 'male' ? 1 : 2;
+    const location = `${el.location.city}, ${el.location.country}`;
+    db.run(`INSERT INTO users (email, password, name, birth, gender_id, photo, location, phone) VALUES ("${el.email}", "${el.login.md5}", "${userName}", "${el.dob.date}", ${genderId}, "${el.picture.large}", "${location}", "${el.phone}")`, (error) => {
+      if (error) {
+        response.send({ message: `INSERT INTO users (email, password, name, birth, gender_id, photo, location, phone) VALUES ("${el.email}", "${el.login.md5}", "${userName}", "${el.dob.date}", ${genderId}, "${el.picture.large}", "${location}", "${el.phone}")` });
+      }
+    });
+  });
+  response.send({ message: 'success' });
+});
+
  app.get('*', (request, response) => {
      response.status(404).sendFile(`${__dirname}/views/404.html`);
 });
@@ -127,3 +143,4 @@ app.delete(`${URL}/users/:id`, (request, response) => {
 const listener = app.listen(process.env.PORT, () => {
   console.log(`Your app is listening on port ${listener.address().port}`);
 });
+
