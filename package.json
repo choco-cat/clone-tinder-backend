@@ -10,11 +10,14 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "app-root-path": "^3.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "md5": "^2.3.0",
     "sqlite3": "^4.1.1",
-    "md5": "^2.3.0"
+    "winston": "^3.3.3",
+    "morgan": "^1.10.0"
   },
   "engines": {
     "node": "12.x"
@@ -23,5 +26,8 @@
   "keywords": [
     "node",
     "express"
-  ]
+  ],
+  "devDependencies": {
+    "config": "^3.3.3"
+  }
 }
