@@ -48,8 +48,8 @@ app.post(`${URL}/users/login`, (request, response) => {
       });
 });
 
+// endpoint to get some user from the database
 
-// endpoint to get all users in the database
 app.get(`${URL}/users/:id`, (request, response) => {
   db.all('SELECT * from users WHERE id = (?)', request.params.id, (err, rows) => {
      if (err) {
@@ -64,8 +64,8 @@ app.get(`${URL}/users/:id`, (request, response) => {
   })
 });
 
-// endpoint to add a user to the database
-app.post(`${URL}/users/add`, (request, response) => {
+// add a user to the database
+app.post(`${URL}/users`, (request, response) => {
   const values = [];
   const fields = Object.keys(request.body);
   fields.forEach((field) => values.push(request.body[field]));
@@ -81,13 +81,45 @@ app.post(`${URL}/users/add`, (request, response) => {
   }
 });
 
+// update user in the database
+app.put(`${URL}/users/:id`, (request, response) => {
+  const fields = Object.keys(request.body);
+  const query = [];
+  fields.forEach((field) => {
+    query.push(`${field} = '${request.body[field]}'`);
+  });
+  db.run(`UPDATE users SET ${query.join(', ')} WHERE id = ${request.params.id}`, (error) => {
+    if (error) {
+      response.send({ message: `Error UPDATE user` });
+    } else {
+      //response.send({ message: 'success' });
+    }
+  });
+  db.all(`SELECT * FROM users WHERE id = ${request.params.id}`,
+    (error, rows) => response.send(JSON.stringify(rows)));
+});
+
+// delete a user from the database
+app.delete(`${URL}/users/:id`, (request, response) => {
+  if (!process.env.DISALLOW_WRITE) {
+    db.run(`DELETE FROM users WHERE id = ${request.params.id}`, (error) => {
+      if (error) {
+        response.send({ message: `Error DELETE user` });
+      } else {
+        response.send({ message: 'success' });
+      }
+    });
+  }
+});
+
+
  app.get('*', (request, response) => {
      response.status(404).sendFile(`${__dirname}/views/404.html`);
 });
 
 
 // listen for requests :)
-const listener = app.listen(55475 /*process.env.PORT*/, () => {
+const listener = app.listen(process.env.PORT, () => {
   console.log(`Your app is listening on port ${listener.address().port}`);
 });
 
