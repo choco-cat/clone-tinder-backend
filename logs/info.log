@@ -226,3 +226,60 @@
 {"message":"::1 - - [14/Jan/2021:12:07:04 +0000] \"GET /users/sdsa HTTP/1.1\" 404 1143 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"error"}
 {"message":"::1 - - [14/Jan/2021:12:07:07 +0000] \"GET /users/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
 {"message":"::1 - - [14/Jan/2021:12:07:07 +0000] \"GET /users/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"error"}
+{"message":"::1 - - [14/Jan/2021:12:21:02 +0000] \"GET /users/ HTTP/1.1\" 200 99353 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:21:03 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:61095/users/\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:21:10 +0000] \"GET /users/4 HTTP/1.1\" 200 494 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:21:19 +0000] \"GET /users/444 HTTP/1.1\" 404 1170 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:21:23 +0000] \"GET /users/ HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:24:04 +0000] \"GET /users/ HTTP/1.1\" 200 99353 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:24:04 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:61266/users/\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:24:07 +0000] \"GET /users/23 HTTP/1.1\" 200 502 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:24:11 +0000] \"GET /users/23sd HTTP/1.1\" 404 1170 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:34:11 +0000] \"GET /users/23sd HTTP/1.1\" 404 1170 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:34:11 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:61856/users/23sd\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:34:15 +0000] \"GET /users/ HTTP/1.1\" 200 99353 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:37:55 +0000] \"GET /users/ HTTP/1.1\" 200 99353 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:37:55 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:62070/users/\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:38:53 +0000] \"GET /users/ HTTP/1.1\" 200 99353 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:38:53 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:62123/users/\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:39:01 +0000] \"GET /users/sd HTTP/1.1\" 404 1170 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:39:41 +0000] \"GET /users/sd HTTP/1.1\" 404 1170 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:39:41 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:62169/users/sd\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"::1 - - [14/Jan/2021:12:39:45 +0000] \"GET /users HTTP/1.1\" 500 13 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"::1 - - [14/Jan/2021:12:41:12 +0000] \"GET /users HTTP/1.1\" 500 13 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"::1 - - [14/Jan/2021:12:42:09 +0000] \"GET /users HTTP/1.1\" 500 13 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:42:09 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:62308/users\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"::1 - - [14/Jan/2021:12:42:30 +0000] \"GET /users HTTP/1.1\" 500 13 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"::1 - - [14/Jan/2021:12:47:53 +0000] \"GET /users/ HTTP/1.1\" 500 13 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:47:53 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:62630/users/\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:48:06 +0000] \"GET /users/23 HTTP/1.1\" 200 502 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:48:23 +0000] \"GET /users/23 HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:48:53 +0000] \"GET /users/23fd HTTP/1.1\" 404 1170 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:49:09 +0000] \"GET /users/23 HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:49:22 +0000] \"GET /users/23 HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:50:54 +0000] \"GET /users/23 HTTP/1.1\" 200 502 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:50:54 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:62802/users/23\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:12:51:05 +0000] \"GET /users/23 HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"500 - SQLITE_ERROR: no such table: users2","level":"error"}
+{"message":"info","level":"info"}
+{"message":"::1 - - [14/Jan/2021:13:12:45 +0000] \"GET /users/ HTTP/1.1\" 200 99353 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:13:12:45 +0000] \"GET /favicon.ico HTTP/1.1\" 404 1170 \"http://localhost:64015/users/\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}
+{"message":"::1 - - [14/Jan/2021:13:12:57 +0000] \"GET /users/sdfdf HTTP/1.1\" 404 1170 \"-\" \"Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36\"\n","level":"info"}

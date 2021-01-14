@@ -13,6 +13,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
+//app.use(morgan('combined', { stream: winston.info.stream }));
 app.use(morgan('combined', { stream: winston.stream }));
 app.use(cors());
 
@@ -27,9 +28,12 @@ app.get('/', (request, response) => {
 app.get(`${URL}/users`, (request, response) => {
   db.all('SELECT * from users', (err, rows) => {
       if (err) {
+          winston.level = 'error';
           winston.error(`${err.status || 500} - ${err.message}`);
           response.status(err.status || 500).send('Server Error!');
       } else {
+          winston.level = 'info';
+        //  winston.info('info');
           response.send(JSON.stringify(rows));
       }
   });
@@ -49,7 +53,6 @@ app.post(`${URL}/users/login`, (request, response) => {
 });
 
 // endpoint to get some user from the database
-
 app.get(`${URL}/users/:id`, (request, response) => {
   db.all('SELECT * from users WHERE id = (?)', request.params.id, (err, rows) => {
      if (err) {
@@ -90,9 +93,8 @@ app.put(`${URL}/users/:id`, (request, response) => {
   });
   db.run(`UPDATE users SET ${query.join(', ')} WHERE id = ${request.params.id}`, (error) => {
     if (error) {
-      response.send({ message: `Error UPDATE user` });
-    } else {
-      //response.send({ message: 'success' });
+      winston.error(`${err.status || 500} - ${err.message}`);
+      response.status(err.status || 500).send('Server Error!');
     }
   });
   db.all(`SELECT * FROM users WHERE id = ${request.params.id}`,
@@ -104,7 +106,8 @@ app.delete(`${URL}/users/:id`, (request, response) => {
   if (!process.env.DISALLOW_WRITE) {
     db.run(`DELETE FROM users WHERE id = ${request.params.id}`, (error) => {
       if (error) {
-        response.send({ message: `Error DELETE user` });
+         winston.error(`${err.status || 500} - ${err.message}`);
+         response.status(err.status || 500).send('Server Error!');
       } else {
         response.send({ message: 'success' });
       }
@@ -112,14 +115,11 @@ app.delete(`${URL}/users/:id`, (request, response) => {
   }
 });
 
-
  app.get('*', (request, response) => {
      response.status(404).sendFile(`${__dirname}/views/404.html`);
 });
-
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log(`Your app is listening on port ${listener.address().port}`);
 });
-
