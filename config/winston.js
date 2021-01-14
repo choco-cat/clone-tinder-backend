@@ -4,7 +4,7 @@ const winston = require('winston');
 const options = {
     fileInfo: {
         level: 'info',
-        filename: `${appRoot}/logsApp/info.log`,
+        filename: `${appRoot}/logs/info.log`,
         handleExceptions: true,
         json: true,
         maxsize: 5242880, // 5MB
