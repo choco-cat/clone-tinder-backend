@@ -24,7 +24,7 @@ app.get('/', (request, response) => {
 });
 
 app.get('/logs', (request, response) => {
-    response.sendFile(`${__dirname}/logsapp/info.log`);
+    response.sendFile(`${__dirname}/info.log`);
 });
 
 // endpoint to get all users in the database
