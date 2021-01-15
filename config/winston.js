@@ -28,6 +28,10 @@ const logger = new winston.createLogger({
 // create a stream object with a 'write' function that will be used by `morgan`
 logger.stream = {
     write: function(message, encoding) {
+        if (logger.level === 'debug') {
+            logger.level = 'info';
+            return;
+        }
         logger.info(message);
     }
 };

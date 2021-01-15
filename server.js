@@ -25,17 +25,16 @@ app.get('/', (request, response) => {
 
 app.get('/logs', (request, response) => {
     response.sendFile(`${__dirname}/info.txt`);
+    winston.level = 'debug';
 });
 
 // endpoint to get all users in the database
 app.get(`${URL}/users`, (request, response) => {
   db.all('SELECT * from users', (err, rows) => {
       if (err) {
-          winston.level = 'error';
           winston.error(`${err.status || 500} - ${err.message}`);
           response.status(err.status || 500).send('Server Error!');
       } else {
-          winston.level = 'info';
           response.send(JSON.stringify(rows));
       }
   });
