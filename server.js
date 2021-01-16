@@ -69,6 +69,22 @@ app.get(`${URL}/users/:id`, (request, response) => {
   })
 });
 
+// endpoint to get pairs of user from the database
+app.get(`${URL}/pairs/:user_id`, (request, response) => {
+  db.all(`SELECT * FROM users WHERE id IN (SELECT user2_id as user_id from pairs WHERE user1_id = ${request.params.user_id} 
+    UNION SELECT user1_id as user_id from pairs WHERE user2_id = ${request.params.user_id})`, (err, rows) => {
+    if (err) {
+      winston.error(`${err.status || 500} - ${err.message}`);
+      response.status(err.status || 500).send('Server Error!');
+    }
+    if(rows.length === 0) {
+      response.status(404).sendFile(`${__dirname}/views/404.html`);
+    } else {
+      response.send(JSON.stringify(rows));
+    }
+  })
+});
+
 // add a user to the database
 app.post(`${URL}/users`, (request, response) => {
   const values = [];
@@ -134,7 +150,8 @@ app.post(`${URL}/users/like`, (request, response) => {
         response.send({ message: 'success' });
       }
     });
-  // check pairs - зашито в логике БД, триггер check_pair: проверяется совпадение лайков, если оно есть, а пары такой еще нет, то пара добавляется
+  // check pairs - зашито в логике БД, триггер check_pair: проверяется совпадение лайков, если оно есть,
+  // а пары такой еще нет, то пара добавляется в таблицу pairs
 });
 
 // endpoint to get some user from the database
