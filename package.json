@@ -13,13 +13,14 @@
     "app-root-path": "^3.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "dateformat": "^4.4.1",
     "express": "^4.17.1",
-    "md5": "^2.3.0",
-    "sqlite3": "^4.1.1",
-    "winston": "^3.3.3",
-    "morgan": "^1.10.0",
     "fs": "^0.0.1-security",
-    "https": "^1.0.0"
+    "https": "^1.0.0",
+    "md5": "^2.3.0",
+    "morgan": "^1.10.0",
+    "sqlite3": "^4.1.1",
+    "winston": "^3.3.3"
   },
   "engines": {
     "node": "12.x"

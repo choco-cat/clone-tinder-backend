@@ -4,6 +4,7 @@ const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 const md5 = require('md5');
 const morgan = require('morgan');
+const dateFormat = require('dateformat');
 const winston = require('./config/winston');
 // TODO при заливке на сервер изменить на адрес сервера, вынести эти константы в отдельный файл
 const URL = '';
@@ -74,8 +75,8 @@ app.post(`${URL}/users`, (request, response) => {
   const fields = Object.keys(request.body);
   fields.forEach((field) => values.push(request.body[field]));
   if (!process.env.DISALLOW_WRITE) {
-    db.run(`INSERT INTO users (${fields.join(',')}) VALUES ("${values.join('","')}")`, (error) => {
-      if (error) {
+    db.run(`INSERT INTO users (${fields.join(',')}) VALUES ("${values.join('","')}")`, (err) => {
+      if (err) {
           winston.error(`${err.status || 500} - ${err.message}`);
           response.status(err.status || 500).send('Server Error!');
       } else {
@@ -92,8 +93,8 @@ app.put(`${URL}/users/:id`, (request, response) => {
   fields.forEach((field) => {
     query.push(`${field} = '${request.body[field]}'`);
   });
-  db.run(`UPDATE users SET ${query.join(', ')} WHERE id = ${request.params.id}`, (error) => {
-    if (error) {
+  db.run(`UPDATE users SET ${query.join(', ')} WHERE id = ${request.params.id}`, (err) => {
+    if (err) {
       winston.error(`${err.status || 500} - ${err.message}`);
       response.status(err.status || 500).send('Server Error!');
     }
@@ -105,8 +106,8 @@ app.put(`${URL}/users/:id`, (request, response) => {
 // delete a user from the database
 app.delete(`${URL}/users/:id`, (request, response) => {
   if (!process.env.DISALLOW_WRITE) {
-    db.run(`DELETE FROM users WHERE id = ${request.params.id}`, (error) => {
-      if (error) {
+    db.run(`DELETE FROM users WHERE id = ${request.params.id}`, (err) => {
+      if (err) {
          winston.error(`${err.status || 500} - ${err.message}`);
          response.status(err.status || 500).send('Server Error!');
       } else {
@@ -114,6 +115,26 @@ app.delete(`${URL}/users/:id`, (request, response) => {
       }
     });
   }
+});
+
+// add a like
+app.post(`${URL}/users/like`, (request, response) => {
+  const values = [];
+  const fields = Object.keys(request.body);
+  fields.forEach((field) => values.push(request.body[field]));
+  fields.push('date');
+  values.push(dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss"));
+  // add like
+  db.run(`INSERT INTO likes (${fields.join(',')}) VALUES ("${values.join('","')}")`, (err) => {
+      if (err) {
+        winston.error(`${err.status || 500} - ${err.message}`);
+        console.log(`INSERT INTO likes (${fields.join(',')}) VALUES ("${values.join('","')}")`);
+        response.status(err.status || 500).send('Server Error!');
+      } else {
+        response.send({ message: 'success' });
+      }
+    });
+  // check pairs - зашито в логике БД, триггер check_pair: проверяется совпадение лайков, если оно есть, а пары такой еще нет, то пара добавляется
 });
 
 // endpoint to get some user from the database
