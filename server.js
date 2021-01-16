@@ -77,12 +77,8 @@ app.get(`${URL}/pairs/:user_id`, (request, response) => {
       winston.error(`${err.status || 500} - ${err.message}`);
       response.status(err.status || 500).send('Server Error!');
     }
-    if(rows.length === 0) {
-      response.status(404).sendFile(`${__dirname}/views/404.html`);
-    } else {
       response.send(JSON.stringify(rows));
-    }
-  })
+   })
 });
 
 // add a user to the database
