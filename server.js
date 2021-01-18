@@ -7,7 +7,6 @@ const morgan = require('morgan');
 const dateFormat = require('dateformat');
 const winston = require('./config/winston');
 // TODO при заливке на сервер изменить на адрес сервера, вынести эти константы в отдельный файл
-const URL = '';
 const dbFile = './data/sqlite3.db';
 
 const app = express();
@@ -30,7 +29,7 @@ app.get('/logs', (request, response) => {
 });
 
 // endpoint to get all users in the database
-app.get(`${URL}/users`, (request, response) => {
+app.get(`/users`, (request, response) => {
   db.all('SELECT * from users', (err, rows) => {
       if (err) {
           winston.error(`${err.status || 500} - ${err.message}`);
@@ -42,7 +41,7 @@ app.get(`${URL}/users`, (request, response) => {
 });
 
 // endpoint to check user login
-app.post(`${URL}/users/login`, (request, response) => {
+app.post(`/users/login`, (request, response) => {
   db.all('SELECT * FROM users WHERE email = ? AND password = ?', request.body.email, request.body.password,
       (err, rows) => {
         if (err) {
@@ -55,7 +54,7 @@ app.post(`${URL}/users/login`, (request, response) => {
 });
 
 // endpoint to get some user from the database
-app.get(`${URL}/users/:id`, (request, response) => {
+app.get(`/users/:id`, (request, response) => {
   db.all('SELECT * from users WHERE id = (?)', request.params.id, (err, rows) => {
      if (err) {
         winston.error(`${err.status || 500} - ${err.message}`);
@@ -69,8 +68,23 @@ app.get(`${URL}/users/:id`, (request, response) => {
   })
 });
 
+// endpoint to get next user to like
+app.get(`/worksheets/:id`, (request, response) => {
+  db.all(`SELECT * FROM users WHERE id NOT IN (SELECT recipient FROM likes WHERE sender = ${request.params.id}) AND id <> ${request.params.id} AND (gender_id = (SELECT looking FROM users WHERE id = ${request.params.id}) OR (SELECT looking FROM users WHERE id = ${request.params.id}) = 0) LIMIT 1`, (err, rows) => {
+    if (err) {
+      winston.error(`${err.status || 500} - ${err.message}`);
+      response.status(err.status || 500).send('Server Error!');
+    }
+    if(rows.length === 0) {
+      response.status(404).sendFile(`${__dirname}/views/404.html`);
+    } else {
+      response.send(JSON.stringify(rows));
+    }
+  })
+});
+
 // endpoint to get pairs of user from the database
-app.get(`${URL}/pairs/:user_id`, (request, response) => {
+app.get(`/pairs/:user_id`, (request, response) => {
   db.all(`SELECT * FROM users WHERE id IN (SELECT user2_id as user_id from pairs WHERE user1_id = ${request.params.user_id} 
     UNION SELECT user1_id as user_id from pairs WHERE user2_id = ${request.params.user_id})`, (err, rows) => {
     if (err) {
@@ -82,7 +96,7 @@ app.get(`${URL}/pairs/:user_id`, (request, response) => {
 });
 
 // add a user to the database
-app.post(`${URL}/users`, (request, response) => {
+app.post(`/users`, (request, response) => {
   const values = [];
   const fields = Object.keys(request.body);
   fields.forEach((field) => values.push(request.body[field]));
@@ -99,7 +113,7 @@ app.post(`${URL}/users`, (request, response) => {
 });
 
 // update user in the database
-app.put(`${URL}/users/:id`, (request, response) => {
+app.put(`/users/:id`, (request, response) => {
   const fields = Object.keys(request.body);
   const query = [];
   fields.forEach((field) => {
@@ -116,7 +130,7 @@ app.put(`${URL}/users/:id`, (request, response) => {
 });
 
 // delete a user from the database
-app.delete(`${URL}/users/:id`, (request, response) => {
+app.delete(`/users/:id`, (request, response) => {
   if (!process.env.DISALLOW_WRITE) {
     db.run(`DELETE FROM users WHERE id = ${request.params.id}`, (err) => {
       if (err) {
@@ -130,7 +144,7 @@ app.delete(`${URL}/users/:id`, (request, response) => {
 });
 
 // add a like
-app.post(`${URL}/users/like`, (request, response) => {
+app.post(`/users/like`, (request, response) => {
   const values = [];
   const fields = Object.keys(request.body);
   fields.forEach((field) => values.push(request.body[field]));
@@ -151,7 +165,7 @@ app.post(`${URL}/users/like`, (request, response) => {
 });
 
 // endpoint to get some user from the database
-app.get(`${URL}/usersimport`, (request, response) => {
+app.get(`/usersimport`, (request, response) => {
   var fs = require("fs");
   var contents = fs.readFileSync("users.json");
   var data = JSON.parse(contents);
