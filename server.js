@@ -55,17 +55,43 @@ app.post(`/users/login`, (request, response) => {
 
 // endpoint to get some user from the database
 app.get(`/users/:id`, (request, response) => {
-  db.all('SELECT * from users WHERE id = (?)', request.params.id, (err, rows) => {
-     if (err) {
-        winston.error(`${err.status || 500} - ${err.message}`);
-        response.status(err.status || 500).send('Server Error!');
-     }
-     if(rows.length === 0) {
-         response.status(404).sendFile(`${__dirname}/views/404.html`);
-     } else {
-         response.send(JSON.stringify(rows));
-     }
-  })
+  db.all(`SELECT * from users WHERE id = ${request.params.id}`, (err, rows) => {
+        if (err) {
+            winston.error(`${err.status || 500} - ${err.message}`);
+            response.status(err.status || 500).send('Server Error!');
+        }
+        if(rows.length === 0) {
+            response.status(404).sendFile(`${__dirname}/views/404.html`);
+        } else {
+            db.all(`SELECT passion_id from user_passion WHERE user_id = ${request.params.id}`, (err2, rows2) => {
+                if (err2) {
+                    winston.error(`${err2.status || 500} - ${err.message}`);
+                    response.status(err2.status || 500).send('Server Error!');
+                }
+                if(rows2.length > 0) {
+                    const passionsArray = [];
+                    rows2.forEach(el => passionsArray.push(el.passion_id));
+                    rows[0].passions = passionsArray;
+                }
+                response.send(JSON.stringify(rows[0]));
+            });
+        }
+    });
+});
+
+// endpoint to get passons list from the database
+app.get(`/passions`, (request, response) => {
+    db.all('SELECT * from passions', (err, rows) => {
+        if (err) {
+            winston.error(`${err.status || 500} - ${err.message}`);
+            response.status(err.status || 500).send('Server Error!');
+        }
+        if(rows.length === 0) {
+            response.status(404).sendFile(`${__dirname}/views/404.html`);
+        } else {
+            response.send(JSON.stringify(rows));
+        }
+    })
 });
 
 // endpoint to get next user to like
