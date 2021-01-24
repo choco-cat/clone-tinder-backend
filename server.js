@@ -14,8 +14,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(morgan('combined', { stream: winston.stream }));
-app.use(cors());
-
+//app.use(cors());
+const allowedOrigins = ['http://localhost:8080'];
+app.use(cors({
+  origin: function(origin, callback){
+    // allow requests with no origin
+    // (like mobile apps or curl requests)
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      const msg = 'The CORS policy for this site does not ' +
+        'allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
 // init sqlite db
 const db = new sqlite3.Database(dbFile);
 
@@ -63,18 +76,7 @@ app.get(`/users/:id`, (request, response) => {
         if(rows.length === 0) {
             response.status(404).sendFile(`${__dirname}/views/404.html`);
         } else {
-            db.all(`SELECT passion_id from user_passion WHERE user_id = ${request.params.id}`, (err2, rows2) => {
-                if (err2) {
-                    winston.error(`${err2.status || 500} - ${err.message}`);
-                    response.status(err2.status || 500).send('Server Error!');
-                }
-                if(rows2.length > 0) {
-                    const passionsArray = [];
-                    rows2.forEach(el => passionsArray.push(el.passion_id));
-                    rows[0].passions = passionsArray;
-                }
-                response.send(JSON.stringify(rows[0]));
-            });
+          response.send(JSON.stringify(rows));
         }
     });
 });
@@ -142,8 +144,9 @@ app.post(`/users`, (request, response) => {
 app.put(`/users/:id`, (request, response) => {
   const fields = Object.keys(request.body);
   const query = [];
+
   fields.forEach((field) => {
-    query.push(`${field} = '${request.body[field]}'`);
+      query.push(`${field} = '${request.body[field]}'`);
   });
   db.run(`UPDATE users SET ${query.join(', ')} WHERE id = ${request.params.id}`, (err) => {
     if (err) {
@@ -151,9 +154,10 @@ app.put(`/users/:id`, (request, response) => {
       response.status(err.status || 500).send('Server Error!');
     }
   });
+
   db.all(`SELECT * FROM users WHERE id = ${request.params.id}`,
     (error, rows) => response.send(JSON.stringify(rows)));
-});
+ });
 
 // delete a user from the database
 app.delete(`/users/:id`, (request, response) => {
