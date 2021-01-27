@@ -1,4 +1,4 @@
-const myMailer = require('nodemailer');
+const myMailer = require('./nodemailer.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
@@ -135,9 +135,7 @@ app.post(`${URI}/users`, (request, response) => {
           winston.error(`${err.status || 500} - ${err.message}`);
           response.status(err.status || 500).send('Server Error!');
       } else {
-         // const test = mailer.sendMail;
-          console.log(myMailer.info());
-          ///test();
+          myMailer.sendMailToUser();
           response.send({ message: 'success' });
       }
     });
