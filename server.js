@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(morgan('combined', { stream: winston.stream }));
-const allowedOrigins = ['http://localhost:8080', 'http://rstinder.com'];
+const allowedOrigins = ['http://localhost:8080', 'http://rstinder.com', 'https://rstinder.com'];
 app.use(cors({
   origin: function(origin, callback){
     // allow requests with no origin
@@ -62,10 +62,36 @@ app.post(`${URI}/users/login`, (request, response) => {
           winston.error(`${err.status || 500} - ${err.message}`);
           response.status(err.status || 500).send('Server Error!');
         } else {
-            response.send(JSON.stringify(rows));
+            if (rows.length > 0 && rows[0].email_status == 0) {
+              response.send([{ error: 'no_activation' }]);
+            } else {
+              response.send(JSON.stringify(rows));
+            }
         }
       });
 });
+
+// endpoint to activation user registration
+app.get(`${URI}/activate/:activationId`, (request, response) => {
+  console.log('Activate user');
+    db.run(`UPDATE users SET email_status = 1 WHERE activation_code = '${request.params.activationId}'`, (err) => {
+      if (err) {
+        winston.error(`${err.status || 500} - ${err.message}`);
+        response.status(err.status || 500).send('Server Error!');
+      }
+      db.all(`SELECT * from users WHERE email_status = 1 AND activation_code = '${request.params.activationId}'`, (err, rows) => {
+        if (err) {
+          winston.error(`${err.status || 500} - ${err.message}`);
+          response.status(err.status || 500).send('Server Error!');
+        }
+        if(rows.length === 0) {
+          response.status(404).sendFile(`${__dirname}/views/404.html`);
+        } else {
+          response.redirect(`https://${request.host}?activation=true`);
+        }
+      });
+    });
+  });
 
 // endpoint to get some user from the database
 app.get(`${URI}/users/:id`, (request, response) => {
@@ -129,13 +155,19 @@ app.post(`${URI}/users`, (request, response) => {
   const values = [];
   const fields = Object.keys(request.body);
   fields.forEach((field) => values.push(request.body[field]));
+  fields.push('register_date');
+  fields.push('activation_code');
+  const currentFormatDate = dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss");
+  values.push(currentFormatDate);
+  const activationCode = md5(currentFormatDate);
+  values.push(activationCode);
   if (!process.env.DISALLOW_WRITE) {
     db.run(`INSERT INTO users (${fields.join(',')}) VALUES ("${values.join('","')}")`, (err) => {
       if (err) {
           winston.error(`${err.status || 500} - ${err.message}`);
           response.status(err.status || 500).send('Server Error!');
       } else {
-          myMailer.sendMailToUser();
+          myMailer.sendMailToUser(request.body.email, `http://${request.host}/clone-tinder-api/activate/${activationCode}`);
           response.send({ message: 'success' });
       }
     });
