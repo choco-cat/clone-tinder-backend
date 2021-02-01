@@ -1,4 +1,5 @@
 const myMailer = require('./nodemailer.js');
+const ADMIN_EMAIL = '"Admin" <admin@rstinder.com>';
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
@@ -73,7 +74,6 @@ app.post(`${URI}/users/login`, (request, response) => {
 
 // endpoint to activation user registration
 app.get(`${URI}/activate/:activationId`, (request, response) => {
-  console.log('Activate user');
     db.run(`UPDATE users SET email_status = 1 WHERE activation_code = '${request.params.activationId}'`, (err) => {
       if (err) {
         winston.error(`${err.status || 500} - ${err.message}`);
@@ -167,12 +167,35 @@ app.post(`${URI}/users`, (request, response) => {
           winston.error(`${err.status || 500} - ${err.message}`);
           response.status(err.status || 500).send('Server Error!');
       } else {
-          myMailer.sendMailToUser(request.body.email, `http://${request.host}/clone-tinder-api/activate/${activationCode}`);
+          const activationLink = `http://${request.host}/clone-tinder-api/activate/${activationCode}`;
+          const html = `You have registered at rsclone.com.<br />To activate your account, please follow the link:<br /> <a href="${activationLink}">${activationLink}</a>`;
+          const subject = "Activation your account on rstinder.com";
+          const replyTo = ADMIN_EMAIL;
+          myMailer.sendMailToUser(request.body.email, subject, html, ADMIN_EMAIL, replyTo);
           response.send({ message: 'success' });
       }
     });
   }
 });
+
+// send feedback form
+app.post(`${URI}/mail`, (request, response) => {
+  db.all(`SELECT * FROM users WHERE id = ${request.body.id} AND email = "${request.body.email}"`, (err, rows) => {
+    if (err) {
+      winston.error(`${err.status || 500} - ${err.message}`);
+      response.status(err.status || 500).send('Server Error!');
+    } else {
+      if (rows.length > 0) {
+        const sender = `${request.body.email}`;
+        const subject = `Feedback form rstinder.com - ${request.body.questionType}`;
+        myMailer.sendMailToUser(ADMIN_EMAIL, subject, request.body.message, ADMIN_EMAIL, sender);
+        response.send({ message: 'success' });
+      } else {
+        response.status(404).sendFile(`${__dirname}/views/404.html`);
+      }
+    }
+  });
+ });
 
 // update user in the database
 app.put(`${URI}/users/:id`, (request, response) => {
