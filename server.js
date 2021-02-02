@@ -1,6 +1,5 @@
 const myMailer = require('./nodemailer.js');
-//const ADMIN_EMAIL = '"Admin" <admin@rstinder.com>';
-const ADMIN_EMAIL = 'admin@rstinder.com';
+const ADMIN_EMAIL = '"Admin" <admin@rstinder.com>';
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
