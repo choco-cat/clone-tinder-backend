@@ -1,5 +1,6 @@
 const myMailer = require('./nodemailer.js');
-const ADMIN_EMAIL = '"Admin" <admin@rstinder.com>';
+//const ADMIN_EMAIL = '"Admin" <admin@rstinder.com>';
+const ADMIN_EMAIL = 'admin@rstinder.com';
 const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
@@ -188,7 +189,8 @@ app.post(`${URI}/mail`, (request, response) => {
       if (rows.length > 0) {
         const sender = `${request.body.email}`;
         const subject = `Feedback form rstinder.com - ${request.body.questionType}`;
-        myMailer.sendMailToUser(ADMIN_EMAIL, subject, request.body.message, ADMIN_EMAIL, sender);
+        const message = `<p>${request.body.name} write:</p><br /><p>${request.body.message}</p>`;
+        myMailer.sendMailToUser(ADMIN_EMAIL, subject, message, ADMIN_EMAIL, sender);
         response.send({ message: 'success' });
       } else {
         response.status(404).sendFile(`${__dirname}/views/404.html`);
