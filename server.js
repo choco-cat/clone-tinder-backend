@@ -164,15 +164,17 @@ app.post(`${URI}/users`, (request, response) => {
   if (!process.env.DISALLOW_WRITE) {
     db.run(`INSERT INTO users (${fields.join(',')}) VALUES ("${values.join('","')}")`, (err) => {
       if (err) {
-          winston.error(`${err.status || 500} - ${err.message}`);
-          response.status(err.status || 500).send('Server Error!');
+        winston.error(`${err.status || 500} - ${err.message}`);
+        response.status(err.status || 500).send('Server Error!');
       } else {
-          const activationLink = `http://${request.host}/clone-tinder-api/activate/${activationCode}`;
-          const html = `You have registered at rsclone.com.<br />To activate your account, please follow the link:<br /> <a href="${activationLink}">${activationLink}</a>`;
-          const subject = "Activation your account on rstinder.com";
-          const replyTo = ADMIN_EMAIL;
-          myMailer.sendMailToUser(request.body.email, subject, html, ADMIN_EMAIL, replyTo);
-          response.send({ message: 'success' });
+        const activationLink = `http://${request.host}/clone-tinder-api/activate/${activationCode}`;
+        const html = `You have registered at rsclone.com.<br />To activate your account, please follow the link:<br /> <a href="${activationLink}">${activationLink}</a>`;
+        const subject = "Activation your account on rstinder.com";
+        const replyTo = ADMIN_EMAIL;
+        myMailer.sendMailToUser(request.body.email, subject, html, ADMIN_EMAIL, replyTo);
+        db.all(`SELECT id, gender_id FROM users WHERE rowid = last_insert_rowid()`, (err, rows) => {
+          response.send({id: rows[0].id, gender_id: rows[0].gender_id});
+        });
       }
     });
   }
@@ -248,6 +250,19 @@ app.post(`${URI}/users/like`, (request, response) => {
     });
   // check pairs - зашито в логике БД, триггер check_pair: проверяется совпадение лайков, если оно есть,
   // а пары такой еще нет, то пара добавляется в таблицу pairs
+});
+
+// add a like
+app.post(`${URI}/users/autolikes`, (request, response) => {
+  const currentDate = dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss");
+  db.run(`INSERT INTO likes (sender, recipient, like, date) SELECT id, ${request.body.id}, 'like', '${currentDate}' FROM users WHERE id <> ${request.body.id} AND gender_id <> ${request.body.gender_id}`, (err) => {
+    if (err) {
+      winston.error(`${err.status || 500} - ${err.message}`);
+      response.status(err.status || 500).send('Server Error!');
+    } else {
+      response.send({ message: 'success' });
+    }
+  });
 });
 
 // endpoint to get some user from the database
