@@ -15,8 +15,6 @@ const swaggerFile = require('./swagger_output.json');
 const dbFile = './data/sqlite3.db';
 const URI = '/clone-tinder-api';
 const app = express();
-//http.createServer(app).listen(3000);
-//console.log("Listening at:// port:%s (HTTP)", 3000);
 app.use(`${URI}/doc`, swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -26,7 +24,6 @@ const allowedOrigins = ['http://localhost:8080', 'http://rstinder.com', 'http://
 app.use(cors({
   origin: function (origin, callback) {
     // allow requests with no origin
-    // (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not ' +
@@ -40,10 +37,9 @@ app.use(cors({
 // init sqlite db
 const db = new sqlite3.Database(dbFile);
 
-/*
 app.get(`${URI}/`, (request, response) => {
   response.sendFile(`${__dirname}/views/index.html`);
-}); */
+}); 
 
 app.get(`${URI}/logs`, (request, response) => {
   response.sendFile(`${__dirname}/info.txt`);
