@@ -8,119 +8,128 @@ const md5 = require('md5');
 const morgan = require('morgan');
 const dateFormat = require('dateformat');
 const winston = require('./config/winston');
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json');
+
 // TODO при заливке на сервер изменить на адрес сервера, вынести эти константы в отдельный файл
 const dbFile = './data/sqlite3.db';
 const URI = '/clone-tinder-api';
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
+//http.createServer(app).listen(3000);
+//console.log("Listening at:// port:%s (HTTP)", 3000);
+app.use(`${URI}/doc`, swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-app.use(morgan('combined', { stream: winston.stream }));
-const allowedOrigins = ['http://localhost:8080', 'http://rstinder.com', 'https://rstinder.com'];
+app.use(morgan('combined', {stream: winston.stream}));
+const allowedOrigins = ['http://localhost:8080', 'http://rstinder.com', 'http://localhost:3000', 'https://rstinder.com'];
 app.use(cors({
-  origin: function(origin, callback){
+  origin: function (origin, callback) {
     // allow requests with no origin
     // (like mobile apps or curl requests)
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not ' +
         'allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
     return callback(null, true);
   }
-})); 
+}));
 
 // init sqlite db
 const db = new sqlite3.Database(dbFile);
 
+/*
 app.get(`${URI}/`, (request, response) => {
   response.sendFile(`${__dirname}/views/index.html`);
-});
+}); */
 
 app.get(`${URI}/logs`, (request, response) => {
-    response.sendFile(`${__dirname}/info.txt`);
-    winston.level = 'debug';
+  response.sendFile(`${__dirname}/info.txt`);
+  winston.level = 'debug';
 });
 
 // endpoint to get all users in the database
 app.get(`${URI}/users`, (request, response) => {
   db.all('SELECT * from users', (err, rows) => {
-      if (err) {
-          winston.error(`${err.status || 500} - ${err.message}`);
-          response.status(err.status || 500).send('Server Error!');
-      } else {
-          response.send(JSON.stringify(rows));
-      }
+    if (err) {
+      winston.error(`${err.status || 500} - ${err.message}`);
+      response.status(err.status || 500).send('Server Error!');
+    } else {
+      response.send(JSON.stringify(rows));
+    }
   });
 });
 
 // endpoint to check user login
 app.post(`${URI}/users/login`, (request, response) => {
   db.all('SELECT * FROM users WHERE email = ? AND password = ?', request.body.email, request.body.password,
-      (err, rows) => {
-        if (err) {
-          winston.error(`${err.status || 500} - ${err.message}`);
-          response.status(err.status || 500).send('Server Error!');
+    (err, rows) => {
+      if (err) {
+        winston.error(`${err.status || 500} - ${err.message}`);
+        response.status(err.status || 500).send('Server Error!');
+      } else {
+        if (rows.length > 0 && rows[0].email_status == 0) {
+          response.status(400).send([{error: 'no_activation'}]);
+        } else if (rows.length === 0) {
+          response.status(400).send(JSON.stringify(rows));
         } else {
-            if (rows.length > 0 && rows[0].email_status == 0) {
-              response.send([{ error: 'no_activation' }]);
-            } else {
-              response.send(JSON.stringify(rows));
-            }
+          response.send(JSON.stringify(rows));
         }
-      });
+      }
+    });
 });
 
 // endpoint to activation user registration
 app.get(`${URI}/activate/:activationId`, (request, response) => {
-    db.run(`UPDATE users SET email_status = 1 WHERE activation_code = '${request.params.activationId}'`, (err) => {
+  db.run(`UPDATE users SET email_status = 1 WHERE activation_code = '${request.params.activationId}'`, (err) => {
+    if (err) {
+      winston.error(`${err.status || 500} - ${err.message}`);
+      response.status(err.status || 500).send('Server Error!');
+    }
+    db.all(`SELECT * from users WHERE email_status = 1 AND activation_code = '${request.params.activationId}'`, (err, rows) => {
       if (err) {
         winston.error(`${err.status || 500} - ${err.message}`);
         response.status(err.status || 500).send('Server Error!');
       }
-      db.all(`SELECT * from users WHERE email_status = 1 AND activation_code = '${request.params.activationId}'`, (err, rows) => {
-        if (err) {
-          winston.error(`${err.status || 500} - ${err.message}`);
-          response.status(err.status || 500).send('Server Error!');
-        }
-        if(rows.length === 0) {
-          response.status(404).sendFile(`${__dirname}/views/404.html`);
-        } else {
-          response.redirect(`https://${request.host}?activation=true`);
-        }
-      });
+      if (rows.length === 0) {
+        response.status(404).sendFile(`${__dirname}/views/404.html`);
+      } else {
+        response.redirect(`https://${request.host}?activation=true`);
+      }
     });
   });
+});
 
 // endpoint to get some user from the database
 app.get(`${URI}/users/:id`, (request, response) => {
   db.all(`SELECT * from users WHERE id = ${request.params.id}`, (err, rows) => {
-        if (err) {
-            winston.error(`${err.status || 500} - ${err.message}`);
-            response.status(err.status || 500).send('Server Error!');
-        }
-        if(rows.length === 0) {
-            response.status(404).sendFile(`${__dirname}/views/404.html`);
-        } else {
-          response.send(JSON.stringify(rows));
-        }
-    });
+    if (err) {
+      winston.error(`${err.status || 500} - ${err.message}`);
+      response.status(err.status || 500).send('Server Error!');
+    }
+    if (rows.length === 0) {
+      response.status(404).sendFile(`${__dirname}/views/404.html`);
+    } else {
+      response.send(JSON.stringify(rows));
+    }
+  });
 });
 
 // endpoint to get passons list from the database
 app.get(`${URI}/passions`, (request, response) => {
-    db.all('SELECT * from passions', (err, rows) => {
-        if (err) {
-            winston.error(`${err.status || 500} - ${err.message}`);
-            response.status(err.status || 500).send('Server Error!');
-        }
-        if(rows.length === 0) {
-            response.status(404).sendFile(`${__dirname}/views/404.html`);
-        } else {
-            response.send(JSON.stringify(rows));
-        }
-    })
+  db.all('SELECT * from passions', (err, rows) => {
+    if (err) {
+      winston.error(`${err.status || 500} - ${err.message}`);
+      response.status(err.status || 500).send('Server Error!');
+    }
+    if (rows.length === 0) {
+      response.status(404).sendFile(`${__dirname}/views/404.html`);
+    } else {
+      response.send(JSON.stringify(rows));
+    }
+  })
 });
 
 // endpoint to get next user to like
@@ -130,7 +139,7 @@ app.get(`${URI}/worksheets/:id`, (request, response) => {
       winston.error(`${err.status || 500} - ${err.message}`);
       response.status(err.status || 500).send('Server Error!');
     }
-    if(rows.length === 0) {
+    if (rows.length === 0) {
       response.status(404).sendFile(`${__dirname}/views/404.html`);
     } else {
       response.send(JSON.stringify(rows));
@@ -146,8 +155,8 @@ app.get(`${URI}/pairs/:user_id`, (request, response) => {
       winston.error(`${err.status || 500} - ${err.message}`);
       response.status(err.status || 500).send('Server Error!');
     }
-      response.send(JSON.stringify(rows));
-   })
+    response.send(JSON.stringify(rows));
+  })
 });
 
 // add a user to the database
@@ -165,7 +174,7 @@ app.post(`${URI}/users`, (request, response) => {
     db.run(`INSERT INTO users (${fields.join(',')}) VALUES ("${values.join('","')}")`, (err) => {
       if (err) {
         winston.error(`${err.status || 500} - ${err.message}`);
-        response.status(err.status || 500).send('Server Error!');
+        response.status(400).send({error: "email must be unique"});
       } else {
         const activationLink = `http://${request.host}/clone-tinder-api/activate/${activationCode}`;
         const html = `You have registered at rsclone.com.<br />To activate your account, please follow the link:<br /> <a href="${activationLink}">${activationLink}</a>`;
@@ -192,13 +201,13 @@ app.post(`${URI}/mail`, (request, response) => {
         const subject = `Feedback form rstinder.com - ${request.body.questionType}`;
         const message = `<p>${request.body.name} write:</p><br /><p>${request.body.message}</p>`;
         myMailer.sendMailToUser(ADMIN_EMAIL, subject, message, ADMIN_EMAIL, sender);
-        response.send({ message: 'success' });
+        response.send({message: 'success'});
       } else {
-        response.status(404).sendFile(`${__dirname}/views/404.html`);
+        response.status(400).send({error: "id and email must belong to the sender!"});
       }
     }
   });
- });
+});
 
 // update user in the database
 app.put(`${URI}/users/:id`, (request, response) => {
@@ -220,12 +229,23 @@ app.put(`${URI}/users/:id`, (request, response) => {
 // delete a user from the database
 app.delete(`${URI}/users/:id`, (request, response) => {
   if (!process.env.DISALLOW_WRITE) {
-    db.run(`DELETE FROM users WHERE id = ${request.params.id}`, (err) => {
+    db.all(`SELECT * FROM users WHERE id = ${request.params.id}`, (err, rows) => {
       if (err) {
-         winston.error(`${err.status || 500} - ${err.message}`);
-         response.status(err.status || 500).send('Server Error!');
+        winston.error(`${err.status || 500} - ${err.message}`);
+        response.status(err.status || 500).send('Server Error!');
       } else {
-        response.send({ message: 'success' });
+        if (rows.length > 0) {
+          db.run(`DELETE FROM users WHERE id = ${request.params.id}`, (err) => {
+            if (err) {
+              winston.error(`${err.status || 500} - ${err.message}`);
+              response.status(err.status || 500).send('Server Error!');
+            } else {
+              response.send({message: 'success'});
+            }
+          });
+        } else {
+          response.status(400).send({error: 'user not isset'});
+        }
       }
     });
   }
@@ -240,14 +260,14 @@ app.post(`${URI}/users/like`, (request, response) => {
   values.push(dateFormat(new Date(), "yyyy-mm-dd HH:MM:ss"));
   // add like
   db.run(`INSERT INTO likes (${fields.join(',')}) VALUES ("${values.join('","')}")`, (err) => {
-      if (err) {
-        winston.error(`${err.status || 500} - ${err.message}`);
-        console.log(`INSERT INTO likes (${fields.join(',')}) VALUES ("${values.join('","')}")`);
-        response.status(err.status || 500).send('Server Error!');
-      } else {
-        response.send({ message: 'success' });
-      }
-    });
+    if (err) {
+      winston.error(`${err.status || 500} - ${err.message}`);
+      console.log(`INSERT INTO likes (${fields.join(',')}) VALUES ("${values.join('","')}")`);
+      response.status(err.status || 500).send('Server Error!');
+    } else {
+      response.send({message: 'success'});
+    }
+  });
   // check pairs - зашито в логике БД, триггер check_pair: проверяется совпадение лайков, если оно есть,
   // а пары такой еще нет, то пара добавляется в таблицу pairs
 });
@@ -260,7 +280,7 @@ app.post(`${URI}/users/autolikes`, (request, response) => {
       winston.error(`${err.status || 500} - ${err.message}`);
       response.status(err.status || 500).send('Server Error!');
     } else {
-      response.send({ message: 'success' });
+      response.send({message: 'success'});
     }
   });
 });
@@ -276,19 +296,18 @@ app.get(`${URI}/usersimport`, (request, response) => {
     const location = `${el.location.city}, ${el.location.country}`;
     db.run(`INSERT INTO users (email, password, name, birth, gender_id, photo, location, phone) VALUES ("${el.email}", "${el.login.md5}", "${userName}", "${el.dob.date}", ${genderId}, "${el.picture.large}", "${location}", "${el.phone}")`, (error) => {
       if (error) {
-        response.send({ message: `INSERT INTO users (email, password, name, birth, gender_id, photo, location, phone) VALUES ("${el.email}", "${el.login.md5}", "${userName}", "${el.dob.date}", ${genderId}, "${el.picture.large}", "${location}", "${el.phone}")` });
+        response.send({message: `INSERT INTO users (email, password, name, birth, gender_id, photo, location, phone) VALUES ("${el.email}", "${el.login.md5}", "${userName}", "${el.dob.date}", ${genderId}, "${el.picture.large}", "${location}", "${el.phone}")`});
       }
     });
   });
-  response.send({ message: 'success' });
+  response.send({message: 'success'});
 });
 
- app.get(`*`, (request, response) => {
-     response.status(404).sendFile(`${__dirname}/views/404.html`);
-}); 
+app.get(`*`, (request, response) => {
+  response.status(404).sendFile(`${__dirname}/views/404.html`);
+});
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log(`Your app is listening on port ${listener.address().port}`);
 });
-

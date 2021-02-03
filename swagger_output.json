@@ -1,0 +1,393 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "REST API",
+    "description": ""
+  },
+  "host": "rstinder.com",
+  "basePath": "/",
+  "tags": [],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [],
+  "produces": [],
+  "paths": {
+    "/clone-tinder-api/logs": {
+      "get": {
+        "tags": [
+          "Mixed"
+        ],
+        "description": "Viewing logs",
+        "parameters": [
+        ],
+        "responses": {}
+      }
+    },
+    "/clone-tinder-api/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Gets users list",
+        "parameters": [
+        ],
+        "responses": {}
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Writes registration data of a new user",
+        "parameters": [
+          {
+            "name": "newUser",
+            "in": "body",
+            "description": "password = 123",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/clone-tinder-api/users/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "User authorization",
+        "parameters": [
+          {
+            "name": "User",
+            "in": "body",
+            "description": "password = 123",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/components/schemas/LoginUser"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/clone-tinder-api/activate/{activationId}": {
+      "get": {
+        "tags": [
+          "Mixed"
+        ],
+        "description": "Account activation after registration",
+        "parameters": [
+          {
+            "name": "activationId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/clone-tinder-api/users/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Returns data by user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "Updates user data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "User",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/components/schemas/UpdateUser"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "description": "Deletes a user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/clone-tinder-api/passions": {
+      "get": {
+        "tags": [
+          "Mixed"
+        ],
+        "description": "Returns the entire list of hobbies",
+        "parameters": [
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/clone-tinder-api/worksheets/{id}": {
+      "get": {
+        "tags": [
+          "Mixed"
+        ],
+        "description": "Returns the next profile to be viewed by an authorized user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/clone-tinder-api/pairs/{user_id}": {
+      "get": {
+        "tags": [
+          "Mixed"
+        ],
+        "description": "Gets the established pairs for the user",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/clone-tinder-api/mail": {
+      "post": {
+        "tags": [
+          "Mixed"
+        ],
+        "description": "Sends a letter to the admin from the feedback form",
+        "parameters": [
+          {
+            "name": "MailToAdmin",
+            "in": "body",
+            "description": "id and email address must belong to the sender",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/components/schemas/MailToAdmin"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/clone-tinder-api/users/like": {
+      "post": {
+        "tags": [
+          "Mixed"
+        ],
+        "description": "Add like",
+        "parameters": [
+          {
+            "name": "AddLike",
+            "in": "body",
+            "description": "id and email address must belong to the sender",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/components/schemas/AddLike"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    }
+  },
+  "definitions": {},
+  "components": {
+    "schemas": {
+      "email": {
+        "type": "string",
+        "description": "email",
+        "example": "example@mail.ru"
+      },
+      "name": {
+        "type": "string",
+        "example": "raparicio"
+      },
+      "password": {
+        "type": "string",
+        "example": "202cb962ac59075b964b07152d234b70"
+      },
+      "gender_id": {
+        "type": "integer",
+        "example": 1
+      },
+      "birth": {
+        "type": "string",
+        "example": "2000-12-12"
+      },
+      "phone": {
+        "type": "string",
+        "example": "2323-23-23"
+      },
+      "questionType": {
+        "type": "string",
+        "example": "topic"
+      },
+      "message": {
+        "type": "string",
+        "example": "Test message to admin rsclone.com"
+      },
+      "id": {
+        "type": "integer",
+        "example": "177"
+      },
+      "id2": {
+        "type": "integer",
+        "example": "178"
+      },
+      "like": {
+        "type": "string",
+        "example": "like"
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "$ref": "#/components/schemas/email"
+          },
+          "password": {
+            "$ref": "#/components/schemas/password"
+          },
+          "name": {
+            "$ref": "#/components/schemas/name"
+          },
+          "birth": {
+            "$ref": "#/components/schemas/birth"
+          },
+          "gender_id": {
+            "$ref": "#/components/schemas/gender_id"
+          }
+        }
+      },
+      "LoginUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "$ref": "#/components/schemas/email"
+          },
+          "password": {
+            "$ref": "#/components/schemas/password"
+          }
+        }
+      },
+      "UpdateUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/name"
+          },
+          "birth": {
+            "$ref": "#/components/schemas/birth"
+          },
+          "gender_id": {
+            "$ref": "#/components/schemas/gender_id"
+          },
+          "phone": {
+            "$ref": "#/components/schemas/phone"
+          }
+        }
+      },
+      "MailToAdmin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "$ref": "#/components/schemas/email"
+          },
+          "name": {
+            "$ref": "#/components/schemas/name"
+          },
+          "id": {
+            "$ref": "#/components/schemas/id"
+          },
+          "questionType": {
+            "$ref": "#/components/schemas/questionType"
+          },
+          "message": {
+            "$ref": "#/components/schemas/message"
+          }
+        }
+      },
+      "AddLike": {
+        "type": "object",
+        "properties": {
+          "sender": {
+            "$ref": "#/components/schemas/id"
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/id2"
+          },
+          "like": {
+            "$ref": "#/components/schemas/like"
+          }
+        }
+      }
+    }
+  }
+}
