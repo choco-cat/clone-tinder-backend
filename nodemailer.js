@@ -18,7 +18,6 @@ module.exports = {
       from: from,
       to: email,
       subject: subject,
-  //    text: "Letter activation account",
       html: html,
       replyTo: replyTo
     });
